@@ -2871,7 +2871,7 @@ GameObject:
   - component: {fileID: 400476811}
   - component: {fileID: 400476810}
   m_Layer: 0
-  m_Name: MsPacman_Map
+  m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
