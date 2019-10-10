@@ -96,6 +96,6 @@ public class Player_Movement : MonoBehaviour
         {
             transform.position = portalDestinationTR.position - new Vector3(1.5f, 0);
         }
-
+        Debug.Log(other.gameObject.name);
     }
 }
