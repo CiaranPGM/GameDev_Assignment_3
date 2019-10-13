@@ -7,15 +7,21 @@ public class Player_Eat : MonoBehaviour
 {
     private int playerScore = 0;
     public new AudioSource[] audio;
-    public Text scoreText;
+    public Text scoreText, winText;
 
     void Start()
+    {
+        winText.text = "";
+    }
+
+    void Update()
     {
         SetScoreText();
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
+        //Checks if the player is eating a pellet/pacdot
         if(other.gameObject.tag == "PacDot")
         {
             Destroy(other.gameObject);
@@ -38,9 +44,15 @@ public class Player_Eat : MonoBehaviour
         }
     }
 
+
     void SetScoreText()
     {
+        //Displays the score text and the win text
         scoreText.text = "Score: " + playerScore.ToString();
+        if (playerScore >= 3250)
+        {
+            winText.text = "You Win!";
+        }
     }
 
     public int GetPlayerScore()

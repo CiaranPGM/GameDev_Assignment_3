@@ -7,9 +7,13 @@ public class Player_Movement : MonoBehaviour
 {
     private Vector2 movement;
     private float moveSpeed = 10f;
+
     Animator animator;
+
     public Transform portalDestinationBR, portalDestinationBL, portalDestinationTR, portalDestinationTL;
+
     public bool isStopped;
+
     private enum Direction { Right, Left, Up, Down, Stop}
     private Direction currentDirection;
 
@@ -30,21 +34,25 @@ public class Player_Movement : MonoBehaviour
 
     void Update()
     {
-            ManageInput();
-            Move();
-            Rotate();
+        ManageInput();
+        Move();
+        Rotate();
     }
 
     void ManageInput()
     {
+        //Adds the inputs to a vector variable
         movement.x = Input.GetAxis("Horizontal");
         movement.y = Input.GetAxis("Vertical");
+
+        //Turns on the animation when the player is moving
         if(movement != Vector2.zero)
         {
             animator.SetBool("isMoving", true);
         }
         else { animator.SetBool("isMoving", false); }
 
+        //Checks which direction player is moving
         if (movement.x == 1.0f )
         {
             currentDirection = Direction.Right;
@@ -68,6 +76,7 @@ public class Player_Movement : MonoBehaviour
 
     void Move()
     {
+        //Moves the players local position based on their input
         if (currentDirection == Direction.Right && !isStopped)
         {
             movement.y = 0.0f;
@@ -96,7 +105,8 @@ public class Player_Movement : MonoBehaviour
 
     void Rotate()
     {
-        if(movement == Vector2.left)
+        //Rotates the player based on their input
+        if (movement == Vector2.left)
         {
             transform.localScale = new Vector3(-1, 1, 1);
             transform.localRotation = Quaternion.Euler(0, 0, 0);
@@ -121,6 +131,7 @@ public class Player_Movement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
+        //Checks for map collision
         if (other.collider.tag == "Map")
         {
             transform.localPosition -= (Vector3)(movement / 2f);
@@ -128,6 +139,8 @@ public class Player_Movement : MonoBehaviour
         }
         else { isStopped = false; }
         isStopped = false;
+
+        //Checks portal collision for teleportation
         if (other.collider.gameObject.name == "Portal_Bottom_Right")
         {
             transform.position = portalDestinationBL.position + new Vector3(1.5f,0);
@@ -144,7 +157,6 @@ public class Player_Movement : MonoBehaviour
             transform.position = portalDestinationTR.position - new Vector3(1.5f, 0);
         }
 
-        Debug.Log(other.gameObject.name);
     }
 
     void OnCollisionExit2D(Collision2D other)
@@ -153,15 +165,5 @@ public class Player_Movement : MonoBehaviour
         {
             isStopped = false;
         }
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-
-        //if(other.tag == "Map")
-        //{
-            
-        //    Debug.Log("here");
-        //}
     }
 }
