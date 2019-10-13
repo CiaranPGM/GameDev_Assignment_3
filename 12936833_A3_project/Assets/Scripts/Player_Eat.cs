@@ -30,6 +30,12 @@ public class Player_Eat : MonoBehaviour
             audio[1].Play();
             scoreText.text = "Score: " + playerScore.ToString();
         }
+        else if(other.gameObject.tag == "Cherry")
+        {
+            Destroy(other.gameObject);
+            playerScore += 100;
+            audio[1].Play();
+        }
     }
 
     void SetScoreText()

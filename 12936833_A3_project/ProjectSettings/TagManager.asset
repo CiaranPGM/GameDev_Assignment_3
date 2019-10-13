@@ -7,6 +7,8 @@ TagManager:
   - PacDot
   - Enemy
   - PowerUpDot
+  - Map
+  - Cherry
   layers:
   - Default
   - TransparentFX
