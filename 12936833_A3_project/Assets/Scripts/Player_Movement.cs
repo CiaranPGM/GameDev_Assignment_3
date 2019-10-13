@@ -6,15 +6,17 @@ using System;
 public class Player_Movement : MonoBehaviour
 {
     private Vector2 movement;
-    public Vector2 direction = Vector2.zero;
     private float moveSpeed = 10f;
     Animator animator;
     public Transform portalDestinationBR, portalDestinationBL, portalDestinationTR, portalDestinationTL;
     public bool isStopped;
+    private enum Direction { Right, Left, Up, Down, Stop}
+    private Direction currentDirection;
 
     void Start()
     {
         animator = gameObject.GetComponent<Animator>();
+        currentDirection = Direction.Stop;
     }
 
     void FixedUpdate()
@@ -28,9 +30,9 @@ public class Player_Movement : MonoBehaviour
 
     void Update()
     {
-        ManageInput();
-        Move();
-        Rotate();
+            ManageInput();
+            Move();
+            Rotate();
     }
 
     void ManageInput()
@@ -42,29 +44,52 @@ public class Player_Movement : MonoBehaviour
             animator.SetBool("isMoving", true);
         }
         else { animator.SetBool("isMoving", false); }
+
+        if (movement.x == 1.0f )
+        {
+            currentDirection = Direction.Right;
+        }
+        if (movement.y == 1.0f)
+        {
+            currentDirection = Direction.Up;
+        }
+        else if (movement.x == -1.0f)
+        {
+            currentDirection = Direction.Left;
+        }
+        else if (movement.y == -1.0f)
+        {
+            currentDirection = Direction.Down;
+        }else if(movement == Vector2.zero)
+        {
+            currentDirection = Direction.Stop;
+        }
     }
 
     void Move()
     {
-        if (movement.x == 1.0f && !isStopped)
+        if (currentDirection == Direction.Right && !isStopped)
         {
             movement.y = 0.0f;
             transform.localPosition += (Vector3)(movement * moveSpeed) * Time.deltaTime;
         }
-        if (movement.y == 1.0f && !isStopped)
+        else if (currentDirection == Direction.Up && isStopped == false)
         {
             movement.x = 0.0f;
             transform.localPosition += (Vector3)(movement * moveSpeed) * Time.deltaTime;
         }
-        else if (movement.x == -1.0f && !isStopped)
+        else if (currentDirection == Direction.Left && isStopped == false)
         {
             movement.y = 0.0f;
             transform.localPosition += (Vector3)(movement * moveSpeed) * Time.deltaTime;
         }
-        else if (movement.y == -1.0f && !isStopped)
+        else if (currentDirection == Direction.Down && isStopped == false)
         {
             movement.x = 0.0f;
             transform.localPosition += (Vector3)(movement * moveSpeed) * Time.deltaTime;
+        }else if(currentDirection == Direction.Stop)
+        {
+            
         }
         
     }
@@ -96,7 +121,14 @@ public class Player_Movement : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if(other.collider.gameObject.name == "Portal_Bottom_Right")
+        if (other.collider.tag == "Map")
+        {
+            transform.localPosition -= (Vector3)(movement / 2f);
+            isStopped = true;
+        }
+        else { isStopped = false; }
+        isStopped = false;
+        if (other.collider.gameObject.name == "Portal_Bottom_Right")
         {
             transform.position = portalDestinationBL.position + new Vector3(1.5f,0);
         }else if (other.collider.gameObject.name == "Portal_Bottom_Left")
@@ -112,22 +144,16 @@ public class Player_Movement : MonoBehaviour
             transform.position = portalDestinationTR.position - new Vector3(1.5f, 0);
         }
 
-        if(other.collider.tag == "Map")
-        {
-            //isStopped = true;
-            transform.localPosition -= (Vector3)(movement / 2);
-        }
-        else { isStopped = false; }
         Debug.Log(other.gameObject.name);
     }
 
-    //void OnCollisionStay2D(Collision2D other)
-    //{
-    //    if (other.collider.tag == "Map")
-    //    {
-    //        transform.localPosition -= (Vector3)(movement / 2);
-    //    }
-    //}
+    void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.collider.tag == "Map")
+        {
+            isStopped = false;
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
