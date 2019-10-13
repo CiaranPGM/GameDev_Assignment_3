@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - PowerUpDot
   - Map
+  - Cherry
   layers:
   - Default
   - TransparentFX
